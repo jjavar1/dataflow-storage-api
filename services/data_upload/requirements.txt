@@ -4,4 +4,5 @@ pandas
 azure-storage-blob
 python-json-logger
 requests
+python-multipart
 httpx

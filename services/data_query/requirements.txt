@@ -5,3 +5,4 @@ azure-storage-blob
 python-json-logger
 requests
 httpx
+python-multipart
