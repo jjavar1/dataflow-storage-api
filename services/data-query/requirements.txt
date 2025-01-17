@@ -2,5 +2,5 @@ fastapi
 uvicorn
 pandas
 azure-storage-blob
-pythonjsonlogger
+python-json-logger
 requests
