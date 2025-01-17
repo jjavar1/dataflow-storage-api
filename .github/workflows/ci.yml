@@ -19,8 +19,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          export PYTHONPATH=$PYTHONPATH:$(pwd)
-          pytest --maxfail=1 --disable-warnings -q
           pip install --upgrade pip
           pip install -r services/data-upload/requirements.txt
           pip install -r services/data-query/requirements.txt
@@ -28,4 +26,5 @@ jobs:
 
       - name: Run Tests
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           pytest --maxfail=1 --disable-warnings -q
