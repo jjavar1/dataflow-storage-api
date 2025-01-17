@@ -79,7 +79,7 @@ We keep it **open-source** so anyone can:
    cd OpenFlow-CSV
     ```
 
-## Set Environment Variables:
+### Set Environment Variables:
 
 ```bash
 export STORAGE_ACCOUNT_NAME="your_storage_account_name"
@@ -87,7 +87,7 @@ export STORAGE_ACCOUNT_KEY="your_storage_account_key"
 export CONTAINER_NAME="csv-container"
 ```
 
-###Build & Run with Docker Compose:
+### Build & Run with Docker Compose:
 
 ```bash
 docker-compose up --build
