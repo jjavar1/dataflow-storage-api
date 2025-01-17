@@ -1,11 +1,11 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
-from services.data-upload.main import app
+from services.data_upload.main import app
 
 client = TestClient(app)
 
-@patch("services.data-upload.main.blob_service_client")
+@patch("services.data_upload.main.blob_service_client")
 def test_upload_sales_data(mock_blob_service):
     mock_blob_client = MagicMock()
     mock_blob_service.get_blob_client.return_value = mock_blob_client
