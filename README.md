@@ -1,6 +1,6 @@
 # OpenFlow CSV (dataflow-storage-api)
 
-OpenFlow CSV (name tbd) is an **open-source** microservices project that ingests CSV files, performs 'basic' data extraction, and logs service events using **Elasticsearch** and **Kibana**. We aim to **extend** this project’s capabilities over time, adding more complex CSV transformations and data analytics features. Was a pet project for other private projects but decided to open source and remove all licensed code.
+OpenFlow CSV (name tbd) is an **open-source** microservices project that ingests CSV files, performs 'basic' data extraction, and logs service events using **Elasticsearch** and **Kibana**. I aim to extend this project’s capabilities over time, adding more complex CSV transformations and data analytics features. Was a pet project for other private projects but decided to open source and remove all licensed code.
 
 ## Table of Contents
 1. [Overview](#overview)
