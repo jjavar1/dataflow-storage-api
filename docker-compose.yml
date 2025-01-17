@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  data-upload:
+    build:
+      context: ./services/data-upload
+    ports:
+      - "8001:8000"
+    environment:
+      - STORAGE_ACCOUNT_NAME=${STORAGE_ACCOUNT_NAME}
+      - STORAGE_ACCOUNT_KEY=${STORAGE_ACCOUNT_KEY}
+      - CONTAINER_NAME=${CONTAINER_NAME}
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+  data-query:
+    build:
+      context: ./services/data-query
+    ports:
+      - "8002:8000"
+    environment:
+      - STORAGE_ACCOUNT_NAME=${STORAGE_ACCOUNT_NAME}
+      - STORAGE_ACCOUNT_KEY=${STORAGE_ACCOUNT_KEY}
+      - CONTAINER_NAME=${CONTAINER_NAME}
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
