@@ -159,7 +159,7 @@ Sample log document (JSON):
 }
 ```
 
-### Testing
+## Testing
 ##Local Testing (without Docker):
 
 ```bash
@@ -169,7 +169,7 @@ pip install pytest
 pytest
 ```
 
-Contributing
+## Contributing
 We welcome pull requests and feature suggestions!
 
 1. Fork this repo.
