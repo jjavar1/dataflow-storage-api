@@ -1,15 +1,16 @@
-import logging
 import os
 import io
+import pandas as pd
 
 from fastapi import FastAPI
 from azure.storage.blob import BlobServiceClient
-import pandas as pd
+from typing import Optional
+from datetime import datetime
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from .logging_config import get_logger
 
-app = FastAPI()
+app = FastAPI(title="Data Query Service")
+logger = get_logger("data-query")
 
 STORAGE_ACCOUNT_NAME = os.getenv("STORAGE_ACCOUNT_NAME", "your_account_name")
 STORAGE_ACCOUNT_KEY = os.getenv("STORAGE_ACCOUNT_KEY", "your_account_key")
@@ -21,44 +22,54 @@ blob_service_client = BlobServiceClient(
 )
 
 @app.get("/query/{filename}")
-async def query_sales_data(filename: str, start_date: str = None, end_date: str = None):
+async def query_sales_data(filename: str, start_date: Optional[str] = None, end_date: Optional[str] = None):
     """
-    Fetch CSV from Azure, optionally filter by date range,
-    and return sales info (total sales, sales by date).
+    Fetch a CSV from Azure Blob, optionally filter by date range, logs to Elasticsearch.
     """
     try:
         blob_client = blob_service_client.get_blob_client(
-            container=CONTAINER_NAME, blob=filename
+            container=CONTAINER_NAME,
+            blob=filename
         )
         blob_data = blob_client.download_blob().readall()
 
-        logger.info(f"File {filename} downloaded from Azure Blob Storage.")
-
-        # Load CSV into DataFrame
         df = pd.read_csv(io.BytesIO(blob_data))
 
-        # filter by date range
+        if "Amount" not in df.columns:
+            logger.warning({
+                "event": "MissingColumn",
+                "filename": filename
+            })
+            return {"error": f"No 'Amount' column in {filename}"}
+
         if start_date and end_date and "Date" in df.columns:
             df["Date"] = pd.to_datetime(df["Date"])
-            filtered_df = df[
-                (df["Date"] >= pd.to_datetime(start_date)) &
-                (df["Date"] <= pd.to_datetime(end_date))
-            ]
-        else:
-            filtered_df = df
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+            df = df[(df["Date"] >= start_dt) & (df["Date"] <= end_dt)]
 
-        total_sales = filtered_df["Amount"].sum() if "Amount" in filtered_df.columns else 0.0
+        total_sales = float(df["Amount"].sum())
         sales_by_date = {}
-        if "Date" in filtered_df.columns:
-            sales_by_date = filtered_df.groupby("Date")["Amount"].sum().to_dict()
+        if "Date" in df.columns:
+            grouped = df.groupby(df["Date"].dt.date)["Amount"].sum()
+            sales_by_date = {str(k): float(v) for k, v in grouped.items()}
 
-        logger.info(f"Query insights for {filename}: total_sales={total_sales}")
+        logger.info({
+            "event": "FileQueried",
+            "filename": filename,
+            "total_sales": total_sales,
+            "start_date": start_date,
+            "end_date": end_date
+        })
 
         return {
             "filename": filename,
-            "total_sales": float(total_sales),
+            "total_sales": total_sales,
             "sales_by_date": sales_by_date
         }
     except Exception as e:
-        logger.error(f"Error querying file: {e}", exc_info=True)
+        logger.error({
+            "event": "QueryError",
+            "error": str(e)
+        })
         return {"error": str(e)}

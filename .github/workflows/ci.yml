@@ -22,7 +22,6 @@ jobs:
           pip install -r services/data-upload/requirements.txt
           pip install -r services/data-query/requirements.txt
           pip install pytest
-          pip install fastapi[all]  # Ensures any missing extras are included
 
       - name: Run Tests
         run: |

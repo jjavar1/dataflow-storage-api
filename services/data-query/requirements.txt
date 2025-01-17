@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+pandas
+azure-storage-blob
+pythonjsonlogger
+requests
