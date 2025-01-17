@@ -20,8 +20,8 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
-          pip install -r services/data-upload/requirements.txt
-          pip install -r services/data-query/requirements.txt
+          pip install -r services/data_upload/requirements.txt
+          pip install -r services/data_query/requirements.txt
           pip install pytest
 
       - name: Run Tests
